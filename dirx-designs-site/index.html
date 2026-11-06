@@ -745,8 +745,8 @@ document.getElementById('contact-form').addEventListener('submit',e=>{
     note.textContent='Your email app should open with your message ready. Just press Send. If it doesn\'t open, email dirxdesignsit@gmail.com or call (520) 467-8243.';
   };
   const ctl=new AbortController();setTimeout(()=>ctl.abort(),8000);
-  fetch('https://formsubmit.co/ajax/dirxdesignsit@gmail.com',{method:'POST',signal:ctl.signal,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({name,email:from,'project type':type,message:msg,_subject:subject,_template:'table',_captcha:'false'})})
-    .then(r=>r.json()).then(j=>{if(String(j.success)!=='true')throw 0;note.textContent="Thanks! Your message was sent. I'll get back to you within two business days.";f.reset()})
+  fetch('https://api.web3forms.com/submit',{method:'POST',signal:ctl.signal,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:'ebad7d2a-acde-4972-b4c0-d52afe4e4152',subject,from_name:'Dirx Designs website',name,email:from,'project type':type,message:msg,botcheck:''})})
+    .then(r=>r.json()).then(j=>{if(j.success!==true&&String(j.success)!=='true')throw 0;note.textContent="Thanks! Your message was sent. I'll get back to you within two business days.";f.reset()})
     .catch(mailto)
     .finally(()=>{note.hidden=false;btn.disabled=false;btn.textContent='Send message'});
 });
