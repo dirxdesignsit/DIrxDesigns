@@ -1576,7 +1576,7 @@ async function start() {
 </script>
 <script>
 
-  // ---------- booking request form (Web3Forms → dirxdesignsit@gmail.com) ----------
+  // ---------- booking request form (Web3Forms → Marcos, megasonjean809@gmail.com) ----------
   (() => {
     const form = document.querySelector('form[name="booking"]');
     const svc = form.service, date = form.date, msg = form.querySelector('.form-msg');
@@ -1627,10 +1627,10 @@ async function start() {
       btn.disabled = true; btn.textContent = 'Sending…';
       msg.className = 'form-msg full'; msg.textContent = '';
       try {
-        // Web3Forms emails the booking request to dirxdesignsit@gmail.com
+        // Web3Forms emails the booking request to Marcos (megasonjean809@gmail.com)
         const fd = new FormData(form);
         [...fd.keys()].filter(k => k.startsWith('_')).forEach(k => fd.delete(k));
-        fd.append('access_key', 'ebad7d2a-acde-4972-b4c0-d52afe4e4152');
+        fd.append('access_key', '73401ffb-201c-4f57-8d1b-9fda95464b61');
         fd.append('subject', 'New booking request: ' + (form.service.value || 'Marcos Kutz') + ' for ' + (form.name.value || 'a client'));
         fd.append('from_name', 'Marcos Kutz website');
         const res = await fetch('https://api.web3forms.com/submit', {
