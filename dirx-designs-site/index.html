@@ -204,12 +204,12 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding-bloc
   <div class="sec-in">
     <p class="eyebrow wide">Services</p>
     <h2 class="wide">What the studio does</h2>
-    <p class="lead">Pick one piece or the whole package. Every site ships responsive, from a 390px phone to a 1440px desktop.</p>
+    <p class="lead">Fully custom websites for local businesses, launched in one to two weeks. Every site works on phones, tablets and desktops.</p>
     <div class="grid4">
-      <div><span class="n wide">01 · Plan</span><h3 class="wide">Strategy</h3><p>Sitemaps, user flows and content planning before any pixels.</p></div>
-      <div><span class="n wide">02 · Design</span><h3 class="wide">UI design</h3><p>Wireframes and full mockups for desktop, tablet and phone.</p></div>
-      <div><span class="n wide">03 · Build</span><h3 class="wide">Development</h3><p>Fast, accessible sites built so you can update them yourself.</p></div>
-      <div><span class="n wide">04 · Brand</span><h3 class="wide">Identity</h3><p>Logos, color and type that carry across your site and socials.</p></div>
+      <div><span class="n wide">01 · Design</span><h3 class="wide">Custom 3D sites</h3><p>Interactive, 3D websites designed from scratch around your brand. No templates.</p></div>
+      <div><span class="n wide">02 · Build</span><h3 class="wide">Launch-ready</h3><p>Fast, mobile-friendly sites with booking, contact and menu pages built in.</p></div>
+      <div><span class="n wide">03 · Host</span><h3 class="wide">Hosting &amp; upkeep</h3><p>$50 to $300 a month keeps your site live, secure and updated.</p></div>
+      <div><span class="n wide">04 · Pay</span><h3 class="wide">Flexible plans</h3><p>Sites from $500 to $3,000. Pay monthly, or pay once and own it.</p></div>
     </div>
   </div>
 </section>
@@ -735,7 +735,14 @@ document.querySelectorAll('.r2 [data-cat]').forEach(b=>b.addEventListener('click
   st.target=-(cur+d)*step;st.holdUntil=performance.now()+2800;
 }));
 root.setAttribute('data-ready','');
-document.getElementById('contact-form').addEventListener('submit',e=>{e.preventDefault();$('f-note').hidden=false});
+document.getElementById('contact-form').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target,note=$('f-note'),btn=f.querySelector('[type=submit]');btn.disabled=true;btn.textContent='Sending…';
+  const d=new FormData(f),body={name:d.get('name'),email:d.get('email'),'project type':d.get('type'),message:d.get('message'),_subject:'New website inquiry from '+d.get('name'),_template:'table',_captcha:'false'};
+  fetch('https://formsubmit.co/ajax/DirxDesignsIT@gmail.com',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body)})
+    .then(r=>r.json()).then(j=>{if(String(j.success)!=='true')throw 0;note.textContent="Thanks! Your message was sent. I'll get back to you within two business days.";f.reset()})
+    .catch(()=>{note.textContent="Your message couldn't be sent. Please email DirxDesignsIT@gmail.com or call (520) 467-8243."})
+    .finally(()=>{note.hidden=false;btn.disabled=false;btn.textContent='Send message'});
+});
 document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
   const el=$(b.dataset.copy),done=t=>{b.textContent=t;setTimeout(()=>b.textContent='Copy',1600)};
   const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const g=getSelection();g.removeAllRanges();g.addRange(r);done('Selected')};
