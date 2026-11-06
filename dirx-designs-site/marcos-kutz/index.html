@@ -338,7 +338,7 @@ footer a { text-decoration: none; } footer a:hover { color: var(--ink); }
         <p class="eyebrow">05 · BOOK</p>
         <h2>Lock in your spot.</h2>
         <p>Pick a service and a time, Tuesday to Saturday, 10 AM – 6 PM. Marcos will text you to confirm. You’re not booked until you hear back. Questions? Call or text <a href="tel:+15203315863">(520) 331-5863</a>.</p>
-        <form class="book-form" name="booking" method="POST" action="https://formsubmit.co/megasonjean809@gmail.com">
+        <form class="book-form" name="booking" method="POST" action="https://api.web3forms.com/submit">
         <input type="hidden" name="_subject" value="New booking request: Marcos Kutz website">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
@@ -1576,7 +1576,7 @@ async function start() {
 </script>
 <script>
 
-  // ---------- booking request form (FormSubmit → Marcos's email) ----------
+  // ---------- booking request form (Web3Forms → dirxdesignsit@gmail.com) ----------
   (() => {
     const form = document.querySelector('form[name="booking"]');
     const svc = form.service, date = form.date, msg = form.querySelector('.form-msg');
@@ -1618,7 +1618,7 @@ async function start() {
       e.preventDefault(); window.openBooking(el.dataset.book || null);
     }));
 
-    if (location.search.includes('booked=1') || document.referrer.includes('formsubmit.co')) { msg.textContent = 'Request sent! Marcos will text you to confirm.'; msg.className = 'form-msg full ok'; }
+    if (location.search.includes('booked=1') || document.referrer.includes('web3forms.com')) { msg.textContent = 'Request sent! Marcos will text you to confirm.'; msg.className = 'form-msg full ok'; }
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -1627,11 +1627,16 @@ async function start() {
       btn.disabled = true; btn.textContent = 'Sending…';
       msg.className = 'form-msg full'; msg.textContent = '';
       try {
-        // FormSubmit emails the request straight to Marcos (megasonjean809@gmail.com)
-        const res = await fetch('https://formsubmit.co/ajax/megasonjean809@gmail.com', {
-          method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+        // Web3Forms emails the booking request to dirxdesignsit@gmail.com
+        const fd = new FormData(form);
+        [...fd.keys()].filter(k => k.startsWith('_')).forEach(k => fd.delete(k));
+        fd.append('access_key', 'ebad7d2a-acde-4972-b4c0-d52afe4e4152');
+        fd.append('subject', 'New booking request: ' + (form.service.value || 'Marcos Kutz') + ' for ' + (form.name.value || 'a client'));
+        fd.append('from_name', 'Marcos Kutz website');
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST', headers: { Accept: 'application/json' }, body: fd });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || String(data.success) !== 'true') throw new Error(data.message || res.status);
+        if (!res.ok || data.success !== true) throw new Error(data.message || res.status);
         const d = new Date(form.date.value + 'T12:00'); const when = `${d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at ${form.time.value}`;
         form.reset(); sync(); buildTimes();
         msg.className = 'form-msg full ok';
@@ -1650,7 +1655,7 @@ async function start() {
         const smsHref = 'sms:+15203315863?&body=' + encodeURIComponent(lines);
         msg.className = 'form-msg full err';
         msg.innerHTML = 'That didn’t go through. <a class="sms-fallback" href="' + smsHref + '">Text this request to Marcos →</a> or call (520) 331-5863.';
-        console.warn('Booking form error:', err && err.message, '(first-ever request: Marcos must click Activate in the FormSubmit email)');
+        console.warn('Booking form error:', err && err.message, '(Web3Forms)');
       } finally { btn.disabled = false; btn.textContent = 'Request appointment'; }
     });
   })();
