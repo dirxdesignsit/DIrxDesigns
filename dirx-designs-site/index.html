@@ -737,10 +737,17 @@ document.querySelectorAll('.r2 [data-cat]').forEach(b=>b.addEventListener('click
 root.setAttribute('data-ready','');
 document.getElementById('contact-form').addEventListener('submit',e=>{
   e.preventDefault();const f=e.target,note=$('f-note'),btn=f.querySelector('[type=submit]');btn.disabled=true;btn.textContent='Sending…';
-  const d=new FormData(f),body={name:d.get('name'),email:d.get('email'),'project type':d.get('type'),message:d.get('message'),_subject:'New website inquiry from '+d.get('name'),_template:'table',_captcha:'false'};
-  fetch('https://formsubmit.co/ajax/DirxDesignsIT@gmail.com',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body)})
+  const d=new FormData(f),name=d.get('name')||'',from=d.get('email')||'',type=d.get('type')||'',msg=d.get('message')||'';
+  const subject='New website inquiry from '+name;
+  const mailto=()=>{
+    const body='Name: '+name+'\nEmail: '+from+'\nProject type: '+type+'\n\n'+msg;
+    location.href='mailto:dirxdesignsit@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    note.textContent='Your email app should open with your message ready. Just press Send. If it doesn\'t open, email dirxdesignsit@gmail.com or call (520) 467-8243.';
+  };
+  const ctl=new AbortController();setTimeout(()=>ctl.abort(),8000);
+  fetch('https://formsubmit.co/ajax/dirxdesignsit@gmail.com',{method:'POST',signal:ctl.signal,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({name,email:from,'project type':type,message:msg,_subject:subject,_template:'table',_captcha:'false'})})
     .then(r=>r.json()).then(j=>{if(String(j.success)!=='true')throw 0;note.textContent="Thanks! Your message was sent. I'll get back to you within two business days.";f.reset()})
-    .catch(()=>{note.textContent="Your message couldn't be sent. Please email DirxDesignsIT@gmail.com or call (520) 467-8243."})
+    .catch(mailto)
     .finally(()=>{note.hidden=false;btn.disabled=false;btn.textContent='Send message'});
 });
 document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
