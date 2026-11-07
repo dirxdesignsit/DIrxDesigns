@@ -203,6 +203,35 @@ body.revealed .up{opacity:1;transform:none}
 .pay{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
 @media (min-width:1024px){.pol{grid-template-columns:5fr 7fr;gap:64px}}
 
+
+/* 07 booking */
+#booking{min-height:auto;padding-top:40px;padding-bottom:160px}
+.bk{display:grid;grid-template-columns:1fr;gap:40px;align-items:start}
+.bk>*{min-width:0}
+@media (min-width:1024px){.bk{grid-template-columns:5fr 7fr;gap:64px}}
+.bk-form{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.bk-form .full{grid-column:1/-1}
+@media (max-width:640px){.bk-form{grid-template-columns:1fr}}
+.bk-form label{display:flex;flex-direction:column;gap:7px;min-width:0;font:500 10px var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:#ffd9e0}
+.bk-form label .opt{letter-spacing:.06em;text-transform:none;color:var(--ink-3)}
+.bk-form input,.bk-form select,.bk-form textarea{width:100%;min-width:0;box-sizing:border-box;font:500 16px var(--font-raleway);letter-spacing:0;text-transform:none;color:#fff;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:12px 14px;outline:none;transition:border-color .2s,background .2s;color-scheme:dark}
+.bk-form select option{background:#5c0a1e;color:#fff}
+.bk-form input::placeholder,.bk-form textarea::placeholder{color:rgba(255,232,236,.55)}
+.bk-form input:focus,.bk-form select:focus,.bk-form textarea:focus{border-color:#fff;background:rgba(255,255,255,.16)}
+.bk-form textarea{min-height:96px;resize:vertical}
+.bk-form .check{flex-direction:row;align-items:flex-start;gap:12px;font:500 14px/1.45 var(--font-raleway);letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.bk-form .check input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#ff8fb0;padding:0}
+.bk-total{font:600 18px var(--font-raleway);color:#fff;margin:0;font-variant-numeric:tabular-nums}
+.bk-total small{display:block;font:400 10px var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-top:4px}
+.bk-send{display:inline-flex;align-items:center;gap:14px;justify-self:start;padding:8px 8px 8px 26px;border-radius:99px;border:1px solid rgba(255,255,255,.5);
+  background:rgba(255,255,255,.16);color:#fff;font:600 15px var(--font-raleway);cursor:pointer;transition:background .3s}
+.bk-send:hover{background:rgba(255,255,255,.26)}
+.bk-send[disabled]{opacity:.6;cursor:progress}
+.bk-msg{margin:0;font:500 15px/1.5 var(--font-raleway);color:var(--ink-2);min-height:1px}
+.bk-msg.ok{color:#fff}.bk-msg.err a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.bk-form [hidden]{display:none!important}
+
 /* ---------- footer ---------- */
 footer{position:relative;z-index:10;background:var(--footer);color:#fff;border-radius:2.5rem 2.5rem 0 0;overflow:hidden}
 .bloom{position:absolute;border-radius:99px;filter:blur(40px);pointer-events:none}
@@ -296,10 +325,10 @@ header{padding-top:env(safe-area-inset-top,0px);height:calc(80px + env(safe-area
 <header>
   <a class="wordmark" href="#hero">MARHEARTS <span class="h">♥</span></a>
   <nav class="main" aria-label="Main">
-    <a href="#services">Services</a><a href="#heart">Designs</a><a href="#gallery">Gallery</a><a href="#policies">Policies</a><a href="#book">Book</a>
+    <a href="#services">Services</a><a href="#heart">Designs</a><a href="#gallery">Gallery</a><a href="#policies">Policies</a><a href="#booking">Book</a>
   </nav>
   <div class="hd-right">
-    <a class="pill" data-book href="https://www.instagram.com/marheartsnails/" target="_blank" rel="noopener">Book now
+    <a class="pill" href="#booking">Book now
       <span class="orb"><svg class="i" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span></a>
   </div>
 </header>
@@ -397,6 +426,46 @@ header{padding-top:env(safe-area-inset-top,0px);height:calc(80px + env(safe-area
       </ol>
     </div>
   </section>
+
+  <!-- 07 BOOKING -->
+  <section class="sec" id="booking">
+    <div class="bk">
+      <div class="pa">
+        <p class="label rv">[ 07 — Book your set ]</p>
+        <h2 class="big rv" style="margin-top:24px;transition-delay:.1s">Request your appointment.</h2>
+        <p class="body rv" style="margin-top:28px;max-width:26rem;transition-delay:.2s">Pick your service and a day that works. Marlene will message you to confirm your time and send the $10 deposit details.</p>
+        <p class="note rv" style="margin-top:22px;transition-delay:.26s">Prefer Instagram? DM <a href="https://www.instagram.com/marheartsnails/" target="_blank" rel="noopener" style="text-decoration:underline">@marheartsnails</a></p>
+      </div>
+      <div class="card pa rv" style="transition-delay:.2s"><div class="card-in" style="padding:26px">
+        <form class="bk-form" id="bk-form" novalidate>
+          <label for="bk-name">Your name<input id="bk-name" name="name" autocomplete="name" required placeholder="First and last name"></label>
+          <label for="bk-phone">Phone<input id="bk-phone" name="phone" type="tel" autocomplete="tel" required placeholder="(520) 555-0123"></label>
+          <label class="full" for="bk-email">Email <span class="opt">(optional)</span><input id="bk-email" name="email" type="email" autocomplete="email" placeholder="you@email.com"></label>
+          <label for="bk-service">Service<select id="bk-service" name="service" required>
+            <option value="">Pick a service</option>
+            <option data-price="45,50,55" data-len="1">Acrylic full set</option>
+            <option data-price="35,40,45" data-len="1">Acrylic fill</option>
+            <option data-price="30" data-design="1">Builder gel</option>
+            <option data-price="20" data-design="1">Manicure</option>
+            <option data-price="">Pedicure</option>
+          </select></label>
+          <label for="bk-length" id="bk-length-wrap" hidden>Length<select id="bk-length" name="length">
+            <option>Small</option><option>Medium</option><option>Long</option>
+          </select></label>
+          <label class="check full" id="bk-design-wrap" hidden><input type="checkbox" id="bk-design" name="design" value="Yes, add design (+$5)">Add a design (+$5)</label>
+          <label for="bk-date">Preferred day<input id="bk-date" name="preferred day" type="date" required></label>
+          <label for="bk-time">Preferred time<select id="bk-time" name="preferred time" required>
+            <option value="">Pick a time of day</option><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Anytime</option>
+          </select></label>
+          <label class="full" for="bk-notes">Your design idea <span class="opt">(optional)</span><textarea id="bk-notes" name="notes" placeholder="Shape, colors, charms, chrome, French tip… or say you'll send a pic"></textarea></label>
+          <label class="check full"><input type="checkbox" id="bk-policy" name="policies" value="Agreed to the house rules and $10 deposit" required>I've read the house rules and understand a $10 deposit holds my spot.</label>
+          <p class="bk-total full" id="bk-total" hidden></p>
+          <button class="bk-send full" type="submit">Request appointment<span class="orb" style="width:40px;height:40px"><svg class="i" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span></button>
+          <p class="bk-msg full" id="bk-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div></div>
+    </div>
+  </section>
 </main>
 
 <footer id="book">
@@ -420,7 +489,7 @@ header{padding-top:env(safe-area-inset-top,0px);height:calc(80px + env(safe-area
         <li><a href="#gallery">Gallery<svg class="i" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></svg></a></li>
         <li><a href="#services">Prices<svg class="i" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></svg></a></li>
         <li><a href="#policies">Policies<svg class="i" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></svg></a></li>
-        <li><a href="#book">Book<svg class="i" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></svg></a></li></ul></div>
+        <li><a href="#booking">Book<svg class="i" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></svg></a></li></ul></div>
       <div class="col"><p class="f-lab" style="font-size:10px">Social</p><ul>
         <li><a href="https://www.instagram.com/marheartsnails/" target="_blank" rel="noopener">@marheartsnails<svg class="i" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></svg></a></li>
         <li><a href="https://www.instagram.com/marheartsloud/" target="_blank" rel="noopener">@marheartsloud<svg class="i" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></svg></a></li></ul></div>
@@ -1478,6 +1547,60 @@ for (let r=0;r<2;r++) words.forEach(w=>{ const s=document.createElement('span');
 const BOOKING_URL = 'https://www.instagram.com/marheartsnails/';
 document.querySelectorAll('[data-book]').forEach(a => a.href = BOOKING_URL);
 const dr = { classList: { contains: () => false } };
+
+
+/* ---------------- booking form (Web3Forms → Marlene's email) ---------------- */
+(function(){
+  const KEY = '7788a4fa-895e-4d05-867b-abf96d476e9e';
+  const f = document.getElementById('bk-form'); if (!f) return;
+  const $b = id => document.getElementById(id), svc = $b('bk-service'), len = $b('bk-length'), lenWrap = document.getElementById('bk-length-wrap'),
+        dWrap = document.getElementById('bk-design-wrap'), design = document.getElementById('bk-design'),
+        total = document.getElementById('bk-total'), msg = document.getElementById('bk-msg'), btn = f.querySelector('.bk-send');
+  const pad = n => String(n).padStart(2,'0'), t = new Date();
+  f.querySelector('#bk-date').min = `${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
+  const price = () => {
+    const o = svc.selectedOptions[0]; if (!o || !o.value) return null;
+    const p = (o.dataset.price||'').split(',').filter(Boolean).map(Number); if (!p.length) return null;
+    let v = o.dataset.len ? p[len.selectedIndex] : p[0];
+    if (o.dataset.design && design.checked) v += 5; return v;
+  };
+  const sync = () => {
+    const o = svc.selectedOptions[0] || {dataset:{}};
+    lenWrap.hidden = !o.dataset.len; dWrap.hidden = !o.dataset.design; if (dWrap.hidden) design.checked = false;
+    const v = price();
+    if (svc.value === 'Pedicure') { total.hidden = false; total.innerHTML = 'Price confirmed by message<small>Pedis are priced per visit</small>'; }
+    else if (v != null) { total.hidden = false; total.innerHTML = `$${v}<small>Estimated price · $10 deposit holds your spot</small>`; }
+    else total.hidden = true;
+  };
+  [svc, len, design].forEach(el => el.addEventListener('change', sync)); sync();
+  const dm = () => '<a href="https://www.instagram.com/marheartsnails/" target="_blank" rel="noopener">DM @marheartsnails</a>';
+  f.addEventListener('submit', async e => {
+    e.preventDefault(); msg.className = 'bk-msg full'; msg.textContent = '';
+    if (!f.checkValidity()) { f.reportValidity(); return; }
+    btn.disabled = true; btn.firstChild.textContent = 'Sending… ';
+    const fd = new FormData(f), v = price();
+    const when = new Date($b('bk-date').value + 'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    const what = svc.value + (lenWrap.hidden ? '' : ' (' + len.value + ')');
+    fd.set('service', what); if (lenWrap.hidden) fd.delete('length');
+    if (v != null) fd.append('estimated price', '$' + v);
+    fd.append('access_key', KEY);
+    fd.append('subject', 'New booking request: ' + what + ' for ' + $b('bk-name').value);
+    fd.append('from_name', 'MarHearts Nails website');
+    if ($b('bk-email').value) fd.append('replyto', $b('bk-email').value);
+    try {
+      if (!KEY || KEY.indexOf('_KEY') > -1) throw new Error('no key');
+      const r = await fetch('https://api.web3forms.com/submit', { method:'POST', headers:{Accept:'application/json'}, body: fd });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || j.success !== true) throw new Error(j.message || r.status);
+      f.reset(); sync();
+      msg.className = 'bk-msg full ok';
+      msg.textContent = `Request sent for ${what} on ${when} (${fd.get('preferred time')})! Marlene will message you to confirm. ♥`;
+    } catch (err) {
+      msg.className = 'bk-msg full err';
+      msg.innerHTML = 'That didn’t go through. Please ' + dm() + ' to book.';
+    } finally { btn.disabled = false; btn.firstChild.textContent = 'Request appointment'; }
+  });
+})();
 
 /* ---------------- shared state ---------------- */
 const control = { progress:0, started:false };
