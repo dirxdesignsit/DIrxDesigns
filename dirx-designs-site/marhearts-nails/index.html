@@ -73,11 +73,11 @@ nav.main{display:none;gap:48px;font:500 14px var(--font-raleway)}
 nav.main a{transition:opacity .3s}nav.main a:hover{opacity:.6}
 .hd-right{display:flex;align-items:center;gap:10px}
 .glass-btn{width:40px;height:40px;border-radius:99px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.4);
-  background:rgba(255,255,255,.2);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  background:rgba(255,255,255,.2);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   box-shadow:inset 0 1.5px 2px rgba(255,255,255,.7),0 8px 30px rgba(0,0,0,.04);transition:background .3s}
 .glass-btn:hover{background:rgba(255,255,255,.3)}
 .pill{display:inline-flex;align-items:center;gap:12px;padding:6px 6px 6px 20px;border-radius:99px;
-  background:rgba(255,255,255,.12);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  background:rgba(255,255,255,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border:1px solid rgba(255,255,255,.1);border-top-color:rgba(255,255,255,.9);border-bottom-color:rgba(255,255,255,.85);
   box-shadow:inset 0 1.5px 2px rgba(255,255,255,.7),0 8px 30px rgba(0,0,0,.04);font:500 13px var(--font-raleway)}
 .orb{width:32px;height:32px;border-radius:99px;background:var(--orb);display:grid;place-items:center;color:#fff;transition:transform .3s var(--ease)}
@@ -146,7 +146,7 @@ body.revealed .up{opacity:1;transform:none}
 .card{border-radius:1.4rem;padding:1px;background:linear-gradient(to bottom,rgba(255,255,255,.55),rgba(255,255,255,.18),rgba(255,255,255,.06));
   box-shadow:0 14px 40px -12px rgba(181,23,75,.2);transition:transform .4s var(--ease)}
 .card:hover{transform:translateY(-2px)}
-.card-in{position:relative;border-radius:1.35rem;background:rgba(92,8,28,.42);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:20px 24px;overflow:hidden}
+.card-in{position:relative;border-radius:1.35rem;background:rgba(92,8,28,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:20px 24px;overflow:hidden}
 .card-in::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(255,255,255,.9),transparent)}
 .card-hd{display:flex;align-items:center;gap:10px;font:400 10px var(--font-mono);color:#ffd9e0}
 .card-hd .k{text-transform:uppercase;letter-spacing:.15em;flex:1}
@@ -510,7 +510,7 @@ window.SHOTS = [{"src": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBD
 <script>
 /* GhostFibers (React Bits) — ported to plain WebGL2, tuned as glitter ribbons for the rose cat-eye background */
 (function () {
-const MAX_RENDER_DIM = 2400;
+const MAX_RENDER_DIM = 1600;
 const BLOOM_LEVELS = 5;
 const INTRO_SECONDS = 2.6;
 const CAMERA = 7.5;
@@ -1049,7 +1049,7 @@ const SETTINGS = {
   perspective: 0.65, depthOfField: 0.85, focusDepth: 0, particles: 0.5, sparkle: 0.9,
   glow: 0.9, brightness: 1.15, vignette: 0.3, grain: 0.03,
   mouseInteraction: true, hover: 0, mouseStrength: 1, pulseOnClick: true,
-  intro: true, lightMode: false, paused: false, dpr: small ? 1.25 : 1.5
+  intro: true, lightMode: false, paused: false, dpr: small ? 0.85 : 1
 };
 
 function init(container) {
@@ -1513,7 +1513,13 @@ setTimeout(function(){ var l=document.getElementById('loader'); if(l){ l.remove(
 <script>
 (() => {
 let THREE = null;   // loaded on demand below, so the rest of the page never depends on it
-const THREE_URL = 'https://unpkg.com/three@0.160.0/build/three.module.js';
+const THREE_URLS = [
+  'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js',
+  'https://unpkg.com/three@0.160.0/build/three.module.js'
+];
+/* try each mirror in turn so one CDN outage never hides the 3D */
+const loadThree = async () => { let lastErr; for (const u of THREE_URLS) { try { return await import(u); } catch (e) { lastErr = e; } } throw lastErr; };
 
 /* ---------------- themes ---------------- */
 const THEMES = [
@@ -1628,31 +1634,14 @@ const onScroll = ()=>{ if(ticking) return; ticking=true; requestAnimationFrame((
   control.progress = scrollY / (innerHeight||1); applyBg(false); document.body.classList.toggle('scrolled', scrollY > 40); }); };
 addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', onScroll); onScroll();
 
-/* ---------------- smooth wheel scroll (lerp 0.09) ---------------- */
+/* ---------------- anchor links: native smooth scroll (no wheel hijack) ---------------- */
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let sTarget = scrollY, sCur = scrollY, sAnim = false;
-const maxS = ()=>document.documentElement.scrollHeight - innerHeight;
-const sLoop = ()=>{
-  sCur += (sTarget - sCur) * 0.09;
-  if (Math.abs(sTarget - sCur) < 0.5) { sCur = sTarget; sAnim=false; }
-  scrollTo(0, sCur);
-  if (sAnim) requestAnimationFrame(sLoop);
-};
-const glideTo = (y)=>{ sTarget = Math.max(0, Math.min(maxS(), y)); if(!sAnim){ sCur = scrollY; sAnim=true; requestAnimationFrame(sLoop);} };
-if (!reduce) {
-  addEventListener('wheel', e=>{
-    if (e.ctrlKey || dr.classList.contains('on')) return;
-    e.preventDefault();
-    const k = e.deltaMode===1 ? 16 : e.deltaMode===2 ? innerHeight : 1;
-    if (!sAnim) sTarget = scrollY;
-    glideTo(sTarget + e.deltaY * k);
-  }, {passive:false});
-  addEventListener('scroll', ()=>{ if(!sAnim){ sTarget = sCur = scrollY; } }, {passive:true});
-}
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
-  const el = document.querySelector(a.getAttribute('href')); if(!el) return;
-  e.preventDefault(); const y = el.getBoundingClientRect().top + scrollY;
-  reduce ? scrollTo(0,y) : glideTo(y);
+  const id = a.getAttribute('href'); if (id.length < 2) return;
+  const el = document.querySelector(id); if(!el) return;
+  e.preventDefault(); const hd = document.querySelector('header'); const off = id === '#top' ? 0 : (hd ? hd.offsetHeight : 0) + 12;
+  const y = Math.max(0, el.getBoundingClientRect().top + scrollY - off);
+  scrollTo({top:y, behavior: reduce ? 'auto' : 'smooth'});
 }));
 
 /* ---------------- reveals ---------------- */
@@ -1707,7 +1696,7 @@ ioc.observe(document.getElementById('cols'));
   const tmp = document.createElement('canvas'), tx = tmp.getContext('2d');
   let maps = null;
   const fibersEl = document.getElementById('fibers');
-  let lastDraw = 0;
+  let lastDraw = 0, lastTf = '';
   const draw = (now) => {
     if (!still && now - lastDraw < 30) { requestAnimationFrame(draw); return; }   // steady ~30fps is plenty for twinkle
     lastDraw = now;
@@ -1805,7 +1794,7 @@ ioc.observe(document.getElementById('cols'));
       }
     }
     // 6. glitter ribbons ride the magnetic line
-    if (fibersEl) fibersEl.style.transform = `translate(${(ux * off).toFixed(1)}px, ${(uy * off).toFixed(1)}px)`;
+    if (fibersEl) { const tf = `translate(${(ux * off).toFixed(1)}px, ${(uy * off).toFixed(1)}px)`; if (tf !== lastTf) { lastTf = tf; fibersEl.style.transform = tf; } }
     if (!still) requestAnimationFrame(draw);
   };
   requestAnimationFrame(draw);
@@ -1843,7 +1832,7 @@ function createScene(ballColor){
   camera.position.set(0, 0, 11);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, innerWidth < 768 ? 1.5 : 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, innerWidth < 768 ? 1.25 : 1.5));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
@@ -1853,7 +1842,7 @@ function createScene(ballColor){
   const hemiLight = new THREE.HemisphereLight(0xffffff, new THREE.Color(ballColor), 1.6); scene.add(hemiLight);
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
   keyLight.position.set(-6, 10, 8); keyLight.castShadow = true;
-  const sm = innerWidth < 768 ? 1024 : 2048; keyLight.shadow.mapSize.width = sm; keyLight.shadow.mapSize.height = sm;
+  const sm = innerWidth < 768 ? 512 : 1024; keyLight.shadow.mapSize.width = sm; keyLight.shadow.mapSize.height = sm;
   keyLight.shadow.camera.near = 0.5; keyLight.shadow.camera.far = 30;
   keyLight.shadow.camera.left = -8; keyLight.shadow.camera.right = 8; keyLight.shadow.camera.top = 8; keyLight.shadow.camera.bottom = -8;
   keyLight.shadow.bias = -0.0003; keyLight.shadow.radius = 12.0; scene.add(keyLight);
@@ -2088,8 +2077,14 @@ function createScene(ballColor){
         deltaPos = new THREE.Vector3(), rotAxis = new THREE.Vector3(), prevMouseWorld = new THREE.Vector3();
   let mouseSpeed = 0;
 
-  const simulateAndRender = () => {
+  let lastFrameAt = 0, parked = false;
+  const simulateAndRender = (now = performance.now()) => {
     raf = requestAnimationFrame(simulateAndRender);
+    // physics is per-frame: cap at ~60fps so 120/144Hz screens don't run double speed or double the work
+    if (now - lastFrameAt < 15.5) return; lastFrameAt = now;
+    // once the balls have flown off-screen, stop simulating until the visitor scrolls back up
+    if (localStarted && control.progress > 3.7) { if (!parked) { parked = true; renderer.render(scene, camera); } return; }
+    parked = false;
     const time = clock.getElapsedTime(); clock.getDelta(); updateMouse3D();
     if (control.started && !localStarted) { localStarted = true; entranceStart = time; scatterFar(true); }
     if (!localStarted) { renderer.render(scene, camera); if (!reportedReady) { reportedReady = true; onReady(); } return; }
@@ -2171,8 +2166,11 @@ function createScene(ballColor){
     for (let step = 0; step < 4; step++) {
       for (let i = 0; i < balls.length; i++) for (let j = i+1; j < balls.length; j++) {
         const b1 = balls[i], b2 = balls[j];
+        const minDist = b1.visualScale + b2.visualScale;
+        const dx = b2.position.x - b1.position.x; if (dx > minDist || dx < -minDist) continue;
+        const dy = b2.position.y - b1.position.y; if (dy > minDist || dy < -minDist) continue;
         collideDiff.subVectors(b2.position, b1.position);
-        const dist = collideDiff.length(), minDist = b1.visualScale + b2.visualScale;
+        const dist = collideDiff.length();
         if (dist < minDist && dist > 0.001) {
           const overlap = minDist - dist; collideDiff.multiplyScalar(1/dist);
           const tm = b1.mass + b2.mass;
@@ -2236,7 +2234,7 @@ function createScene(ballColor){
 
 function rebuild(){ disposeScene && disposeScene(); disposeScene = createScene(theme.ball); }
 const failSafe = setTimeout(() => { if (!sceneReady) onReady(); }, 8000);   // never let a slow download hold the loader
-import(THREE_URL)
+loadThree()
   .then(m => { THREE = m; disposeScene = createScene(theme.ball); })
   .catch(err => { console.warn('3D tools unavailable, page continues without them', err); clearTimeout(failSafe); onReady(); });
 
